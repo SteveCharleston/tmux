@@ -1931,6 +1931,18 @@ tty_cmd_syncstart(struct tty *tty, __unused const struct tty_ctx *ctx)
 }
 
 void
+tty_cmd_rawsixel(struct tty *tty, const struct tty_ctx *ctx)
+{
+	int	flags = (tty->term->flags|tty->term_flags);
+
+	if ((flags & TERM_SIXEL) || tty_term_has(tty->term, TTYC_SXL)) {
+		tty_add(tty, ctx->ptr, ctx->num);
+		if (!ctx->more)
+			tty_invalidate(tty);
+	}
+}
+
+void
 tty_cell(struct tty *tty, const struct grid_cell *gc,
     const struct grid_cell *defaults, int *palette)
 {

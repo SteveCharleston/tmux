@@ -476,6 +476,7 @@ enum tty_code_code {
 	TTYC_SMUL,
 	TTYC_SMULX,
 	TTYC_SMXX,
+	TTYC_SXL,
 	TTYC_SS,
 	TTYC_SYNC,
 	TTYC_TC,
@@ -1265,6 +1266,8 @@ struct tty_term {
 #define TERM_DECFRA 0x8
 #define TERM_RGBCOLOURS 0x10
 #define TERM_VT100LIKE 0x20
+#define TERM_EARLYWRAP 0x2
+#define TERM_SIXEL 0x4
 	int		 flags;
 
 	LIST_ENTRY(tty_term) entry;
@@ -1354,6 +1357,7 @@ struct tty_ctx {
 
 	u_int			 num;
 	void			*ptr;
+	int			 more;
 
 	/*
 	 * Cursor and region position before the screen was updated - this is
@@ -2132,6 +2136,7 @@ void	tty_close(struct tty *);
 void	tty_free(struct tty *);
 void	tty_update_features(struct tty *);
 void	tty_set_selection(struct tty *, const char *, size_t);
+void	tty_set_type(struct tty *, int, int);
 void	tty_write(void (*)(struct tty *, const struct tty_ctx *),
 	    struct tty_ctx *);
 void	tty_cmd_alignmenttest(struct tty *, const struct tty_ctx *);
@@ -2157,6 +2162,7 @@ void	tty_cmd_setselection(struct tty *, const struct tty_ctx *);
 void	tty_cmd_rawstring(struct tty *, const struct tty_ctx *);
 void	tty_cmd_syncstart(struct tty *, const struct tty_ctx *);
 void	tty_default_colours(struct grid_cell *, struct window_pane *);
+void	tty_cmd_rawsixel(struct tty *, const struct tty_ctx *);
 
 /* tty-term.c */
 extern struct tty_terms tty_terms;
@@ -2637,6 +2643,7 @@ void	 screen_write_alternateon(struct screen_write_ctx *,
 	     struct grid_cell *, int);
 void	 screen_write_alternateoff(struct screen_write_ctx *,
 	     struct grid_cell *, int);
+void	 screen_write_rawsixel(struct screen_write_ctx *, u_char *, u_int, int);
 
 /* screen-redraw.c */
 void	 screen_redraw_screen(struct client *);

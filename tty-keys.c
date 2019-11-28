@@ -1,4 +1,3 @@
-/* $OpenBSD$ */
 
 /*
  * Copyright (c) 2007 Nicholas Marriott <nicholas.marriott@gmail.com>
@@ -1192,6 +1191,8 @@ tty_keys_device_attributes(struct tty *tty, const char *buf, size_t len,
 	struct client	*c = tty->client;
 	u_int		 i, n = 0;
 	char		 tmp[64], *endptr, p[32] = { 0 }, *cp, *next;
+	static const char	*types[] = TTY_TYPES;
+	int			 type, flags = 0;
 
 	*size = 0;
 	if (tty->flags & TTY_HAVEDA)
@@ -1259,6 +1260,16 @@ tty_keys_device_attributes(struct tty *tty, const char *buf, size_t len,
 
 	tty_update_features(tty);
 	tty->flags |= TTY_HAVEDA;
+
+	for (i = 2; i < n; i++) {
+		log_debug("%s: DA feature: %d", c->name, p[i]);
+		if (p[i] == 4)
+			tty->flags |= TERM_SIXEL;
+	}
+
+	log_debug("%s: received DA %.*s (%s)", c->name, (int)*size, buf,
+	    types[type]);
+
 
 	return (0);
 }
