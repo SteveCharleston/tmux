@@ -1325,6 +1325,7 @@ struct tty {
 #define TTY_HAVEDA 0x100
 #define TTY_HAVEXDA 0x200
 #define TTY_SYNCING 0x400
+#define TTY_NOBLOCK 0x100
 	int		 flags;
 
 	struct tty_term	*term;
