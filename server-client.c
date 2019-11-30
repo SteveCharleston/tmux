@@ -1840,7 +1840,7 @@ server_client_check_redraw(struct client *c)
 	 * end up back here.
 	 */
 	needed = 0;
-	if (c->flags & CLIENT_ALLREDRAWFLAGS)
+	if (c->flags & (CLIENT_ALLREDRAWFLAGS & ~CLIENT_REDRAWSTATUS))
 		needed = 1;
 	else {
 		TAILQ_FOREACH(wp, &w->panes, entry) {
